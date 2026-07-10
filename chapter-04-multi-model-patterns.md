@@ -78,17 +78,11 @@ For a system that matters, especially one that pages you at 3 a.m., a single mod
 
 This is also the quiet argument for the model-agnostic harness from Chapters 2 and 3. If your tools, memory, and logic live in the harness and the model is a config value, then failing over, swapping in next month's better model, or dropping in a fine-tuned one is a config change, not a rewrite. Build it that way and multi-model stops being scary and starts being a dial you turn.
 
-## Aegis gets a bench of models
+## TODO: running example
 
-Let's wire this into the incident agent, because Aegis is exactly the kind of system that earns a bench of models rather than one.
-
-- A **small fine-tuned open model**, hosted on-box, classifies each incoming alert into a type and severity. This runs on every single alert, the data is sensitive, and the task is narrow and stable. Perfect fine-tuning territory.
-- An **embeddings model** pulls the relevant runbook and the most similar past incidents. Cheap, specialized, constant.
-- A **strong general model, with its reasoning turned up**, does the actual root-cause reasoning, but only on the incidents that survive the cheap triage and look genuinely hard. Rare, more expensive, worth it.
-- A **cheap general model** writes the human-readable incident summary at the end. Nobody needs a frontier model to write a tidy paragraph.
-- And a **fallback model from a second provider** stands by, so a rate limit on the primary at 3 a.m. degrades Aegis instead of killing it.
-
-One agent, five models, each matched to its step, all swappable behind the harness. That's the pattern in full.
+> **TODO (author):** the running-example section goes here, to be written once the running example is settled.
+>
+> *What this section should do:* Show the running example with a bench of models rather than one: a cheap fast model for triage/classification, a strong general model with thinking turned up for root-cause reasoning, a small specialized model for log parsing, and a fallback model from a second provider so a 3 a.m. rate limit degrades rather than kills. Land the binding-constraint point per task.
 
 ## When not to reach for this
 
@@ -103,6 +97,7 @@ This is mostly a **harness** pattern. Choosing models, routing between them, ser
 ---
 
 ### Author notes (not for the reader)
+- **Running example (standing decision):** the running-example section is a TODO placeholder pending the author's decision on the example itself. Original Aegis prose is preserved in `aegis-sections-stash.md`. Apply the same convention to all future chapters: draft the chapter, mark the running-example section as TODO with a note on what it should do.
 - **Reframe (from Multi-Modal):** per your call, this chapter is now about *when to use which model*, not mixed input modalities. Opener is "there is no best model," which reframes the leaderboard-chasing instinct.
 - **Token bill section (your ask):** a dedicated pass on token usage across Claude, Gemini, and OpenAI: output costs 5-10x input, reasoning/thinking tokens as the hidden multiplier, "cheaper per token is not cheaper per task," and prompt caching (roughly a tenth of input price) as the single biggest lever for a looping agent, plus batch APIs at 50% off. Durable principles up front, dated numbers flagged.
 - **Current as of drafting:** open-model families (Qwen, Llama, Mistral, Gemma, DeepSeek, GLM, GPT-OSS), LoRA/QLoRA, and the frontier token prices (Claude Opus ~$5/$25, Gemini Pro ~$2/$12, GPT-5-class ~$2.50/$15 per million in/out) are current per searches at draft time. All of it belongs in the quarantined/dated bucket, verify names and numbers before print.

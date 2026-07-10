@@ -59,35 +59,11 @@ That is not a function call. That is a small operating system for a single task 
 
 The rest of this book is that environment, taken one layer at a time.
 
-## Meet Aegis
+## TODO: running example
 
-Enough theory. We're going to build one, and we're going to keep building it, chapter after chapter, until it's a system I'd actually let near production.
-
-Meet **Aegis**, our running example: an incident-response agent. Its job, stated in one line:
-
-> *When a production alert fires, figure out what's wrong and — with the right approvals — fix it.*
-
-Now watch me build the version almost everyone builds first. Call it Aegis v0:
-
-```
-on_alert(alert):
-    reply = llm("You are an SRE. Here is an alert. What's wrong and how do I fix it?\n" + alert.text)
-    post_to_slack(reply)
-```
-
-In a demo, this looks incredible. A real alert comes in, and out comes a fluent, confident diagnosis with a numbered remediation plan. Everyone claps.
-
-Then you ship it, and here is exactly how it falls apart:
-
-- **It has no eyes.** It never looked at a single log line, metric, or dashboard. It pattern-matched the *words* in the alert against everything it read on the internet during training. The diagnosis isn't wrong because the model is dumb; it's wrong because the model is *guessing*, and we gave it no way not to.
-- **It has no hands.** Even when it's right, it can't *do* anything. It writes a plan and hopes a human executes it. The gap between knowing and acting is still 100% human.
-- **It has no memory.** This exact alert fired last Tuesday and we fixed it in four minutes. Aegis v0 has no idea. It solves every problem for the first time, forever.
-- **It has no loop.** One shot, one answer, no checking whether the answer was any good. If the first guess is wrong, there is no second guess.
-- **And it fails silently.** The most dangerous property of all: when it's confidently, fluently wrong, *nothing about the output tells you so.* It looks exactly as trustworthy as when it's right.
-
-Every one of those failures is a chapter of this book. Eyes are tools and grounding. Hands are actions and human-in-the-loop approvals. Memory is its own hard problem with four flavors. The loop is where reliability actually lives. And "failing silently" is why we'll obsess over validation, evaluation, and observability long after the demo stopped being impressive.
-
-Aegis v0 is not a strawman. It's the honest starting point — the thing that's genuinely tempting because it genuinely dazzles for about a day. The whole journey of this book is the distance from *that* to something you'd trust at 3 a.m.
+> **TODO (author):** the running-example section goes here, to be written once the running example is settled.
+>
+> *What this section should do:* Introduce the running example: the incident-response agent, its one-line job, and the naive v0 build with its five failures (no senses, no hands, no memory, no loop, no guardrails). Those five failures are re-read as the four phases in Ch3, so keep them stable or update Ch3 to match.
 
 ## The bridge
 
@@ -95,13 +71,14 @@ I said I've grown allergic to dogma, and I meant it. I'm not going to tell you a
 
 But I also don't want to do the thing veterans do, where we use our scars as a *gate* — a way to stand at the door and tell newcomers it's harder than it looks, that they had to be there, that they don't understand. I've done that too, and I'm not proud of it. The scars are more useful as a *bridge*: a way to carry you across the expensive mistakes without making you pay for each one yourself.
 
-So that's the deal for the rest of this book. I'll hand you the patterns I wish someone had handed me — the ones that turn a dazzling demo into a system that holds. We'll build Aegis together, one layer at a time, and I'll show you where every layer came from and where it breaks.
+So that's the deal for the rest of this book. I'll hand you the patterns I wish someone had handed me — the ones that turn a dazzling demo into a system that holds. We'll build the running example together, one layer at a time, and I'll show you where every layer came from and where it breaks.
 
 Turn the page and I'll give you the one mental model the whole thing hangs on. It's four words long.
 
 ---
 
 ### Author notes (not for the reader)
+- **Running example (standing decision):** the running-example section is a TODO placeholder pending the author's decision on the example itself. Original Aegis prose is preserved in `aegis-sections-stash.md`. Apply the same convention to all future chapters: draft the chapter, mark the running-example section as TODO with a note on what it should do.
 - **Opener type:** "the stakes / waves," not a failure opener — those stay reserved for Ch 8, 15, and one of 10/23. This keeps Ch 1 from front-loading the failure device.
 - **Register in action:** hot voice in "The waves," "You're not calling an API," and "The bridge"; clean register in "Automation was never this" and the Aegis v0 mechanics. That's the ~65% target for a chapter opener.
 - **The one bold turning-line** is the "I don't write the steps" line — one per section, per the guide.

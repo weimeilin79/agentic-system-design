@@ -62,18 +62,11 @@ The early wave of agent products got shipped on exactly that imbalance. Strong p
 
 The fix is to stop treating a good prompt as a finished agent, and to put real engineering into the harness and the loop, the phases where trustworthiness actually comes from. That inversion is the thesis, and it's why this book spends one chapter on prompting and an entire part on the loop.
 
-## Aegis, evolved
+## TODO: running example
 
-Let's make it concrete with the incident agent.
-
-Aegis v0, from Chapter 1, was a pure prompt-phase creature: one call to a model with the alert text pasted in. Fluent, instant, and useless in production. Every one of its failures was a phase it never reached, and now we can name them exactly:
-
-- It guessed instead of looking, because it never entered the **context** phase. It saw the words in the alert, never a log line or a metric.
-- It could only suggest, never act, because it never reached the **harness** phase. No tools, no hands, nothing wired to the real system, and no memory of what worked last time.
-- It solved every incident as if for the first time, because nothing in its harness managed memory across runs.
-- And it failed silently, confidently wrong with nothing to catch it, because it never reached the **loop** phase. One pass, no check, no second try.
-
-Building Aegis, for the rest of this book, is just walking it forward through the phases. We give it senses so it looks before it concludes. We give it a harness so it can act, remember, and recover. We wrap it in a loop so it verifies the fix worked before it closes the incident, and escalates to a human when it can't. Same four, in order, turning a party trick into something you would let near production.
+> **TODO (author):** the running-example section goes here, to be written once the running example is settled.
+>
+> *What this section should do:* Re-read the running example's v0 failures as phases it never reached, then walk it forward: senses (context), hands (tools), memory, the loop. This is the chapter's payoff, so it needs the v0 from Ch1 to line up.
 
 ## The evolution is the map
 
@@ -86,6 +79,7 @@ I watched these phases arrive one at a time, and got a few of them wrong before 
 ---
 
 ### Author notes (not for the reader)
+- **Running example (standing decision):** the running-example section is a TODO placeholder pending the author's decision on the example itself. Original Aegis prose is preserved in `aegis-sections-stash.md`. Apply the same convention to all future chapters: draft the chapter, mark the running-example section as TODO with a note on what it should do.
 - **Proportionality (your note):** the opener no longer implies a career of "living through eras." It says plainly this happened in about two years, four phases, fast. "Phase," not "era," throughout.
 - **Fairness fix (your note):** dropped "most teams never left the prompt phase / the tragedy" (unfair and not real). Replaced with the accurate version: the field moved fast, the *products* didn't, and the early wave shipped on just the first phase or two, which is why early agents feel flaky. This shows up in the opener bold line, the prompt phase, and the thesis.
 - **Prompt claim corrected (your note):** removed "the prompt is the least important." New claim: all four matter, but the prompt is the phase we've had longest and mostly figured out, so it's the one you're least likely to be failing on. The trap is mistaking a good prompt for a finished agent.

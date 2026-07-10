@@ -91,6 +91,7 @@ Turn the page.
 ---
 
 ### Author notes (not for the reader)
+- **Running example (standing decision):** the running-example section is a TODO placeholder pending the author's decision on the example itself. Original Aegis prose is preserved in `aegis-sections-stash.md`. Apply the same convention to all future chapters: draft the chapter, mark the running-example section as TODO with a note on what it should do.
 - **Restructure (your call):** the anatomy is now split into two levels. The single agent's **anatomy** is five parts (brain, senses, hands and feet, memory, voice), and orchestration / identity+guardrails / observability come to the front in "When agents work together". Note that observability is the partial exception: it's built into each agent (self-reporting) and also aggregates across the group, so its bullet flags that it lives at both levels rather than being purely group-level. Word "organ" retired in favor of "anatomy" / "parts" throughout.
 - **The loop moved cleanly:** a single agent's own loop is its inner rhythm, deferred to Chapter 3 (the close still teases it). Coordination *between* agents is the separate, society-level thing that points to Chapter 14. So "the loop" and "orchestration" are no longer bundled.
 - **The voice part** maps to agent-to-agent communication (A2A), flagged as vestigial for a solo agent and load-bearing the moment there are two. Points to Chapter 4 and Chapter 14.
