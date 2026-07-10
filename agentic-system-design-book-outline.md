@@ -130,24 +130,26 @@ Rule of thumb: run the voice hot when framing; cool when the reader is doing. A 
 - *When not to use it:* deterministic, static integrations where MCP is overkill.
 
 ### Chapter 8. Human-in-the-Loop Patterns
-- **Approval gates by design;** asymmetric checkpoints on high-stakes actions.
-- **Outcome-based accountability:** review the change, not the author.
-- **Native trigger surfaces** (Slack, GitHub, the tools people already use).
-- Designing the interruption: how to pause, serialize state, and resume safely.
-- *Aegis:* auto-diagnose freely; require human approval before any write to production.
-- *In the wild:* Shopify Sidekick's approval gates; Block's confirmation on financial/prod actions; Honk landing work as reviewable PRs.
-- *When not to use it:* low-stakes, reversible actions where a gate just adds latency.
+- **Framing:** "Nobody reads the diff." A gate that is always approved is not a control, it is a liability with a signature on it. Oversight is designed, not added, and the scarce resource is reviewer attention.
+- **Reversibility, not importance, is the gating axis** (crossed with blast radius): autonomous+logged, autonomous+after-the-fact review, gated, always gated.
+- **How oversight breaks:** rubber-stamping (theatre of approval), gating the trivia, blocking the loop (sync timeouts), stale approval, the silent override.
+- **Deciding where the gate goes:** Tier by Reversibility; Put the Gate in the Orchestrator, Not the Model (a confident model skips gates exactly when novelty demanded one); Escalate on Uncertainty (confidence/value/anomaly thresholds).
+- **Making the pause work:** Interrupt Asynchronously on Durable State (checkpoint, queue with TTL, resume; sync holds die to gateway/serverless timeouts and OAuth expiry); Re-validate on Resume; Timeout Policy with an explicit fail direction.
+- **Making the human effective:** Write an Evidence Pack, Not an Alert (decide in under 15 seconds); Offer Four Verbs (approve, edit, reject, respond); Meet People Where They Work (Slack, the PR, the ticket).
+- **Learning from the human:** Capture Every Override (audit trail + eval set + bug report); Earn Autonomy with Evidence (progressive autonomy, per action, not per agent).
+- **The ladder:** in-the-loop to on-the-loop to out-of-the-loop; the review-throughput bottleneck forward-references Chapter 27.
+- *Running example:* TODO (see front matter). Tiering, the async interrupt, the evidence pack in the on-call channel, an edited remediation captured as an eval case.
+- *In the wild:* Honk landing work as reviewable PRs (the review surface predates agents); LangGraph static breakpoints + dynamic interrupts over a checkpoint store; enterprise maturity ladders moving deliberately from HITL toward human-on-the-loop.
+- *When not to use it:* low-stakes reversible actions where a gate adds latency and nothing else; and "liability laundering," a gate that exists only to attach a human name to a failure.
+- *Which phase:* the loop, with the harness supplying checkpoint/durable execution and policy supplying enforcement.
 
 ### Chapter 9. Evaluation Patterns
-- **Behavioral evaluation** beyond unit/integration tests: "what did it decide, and was it right?"
-- **LLM-as-judge, validated against humans;** trusting the judge only once it matches evaluators.
-- **Treat agents like regulated systems:** sandbox, simulate, then grant autonomy.
-- **A/B against the prior baseline;** offline eval sets and regression suites for agents.
-- Building the eval harness before you need it.
-- *Aegis:* a simulation harness replaying historical incidents; an LLM judge scoring diagnosis quality.
-- *In the wild:* Shopify's human + LLM-judge pre-deployment eval; Spotify's LLM eval judges for relevance/coherence/quality.
-- *Vendor lens:* AWS AgentCore ships 13 pre-built evaluators as a platform component; OpenAI's AgentKit adds datasets, trace grading, and automated prompt optimization; Microsoft/Google bake evaluation into the managed runtime — evidence that eval is becoming platform infrastructure, not a bolt-on.
-- *When not to use it:* (trick chapter — you always evaluate; the question is how much, not whether.)
+- **Framing:** "The green checkmark that lied." Of 58 agent traces with perfect outcome scores, ~83% still contained a procedural violation. Outcome hides how the answer was reached. Evaluation is an instrument you steer by, built first, not a launch gate.
+- **The reframe (replaces "when not to"):** you always evaluate; the only question is *how much*, scaled by autonomy and cost-of-wrong.
+- **The patterns (flat catalog):** Score the Path Not Just the Destination (trajectory + outcome); Deterministic Checks First, Judges Only for What Resists Them; Judge but Validate the Judge (calibrate against humans; judge quality is itself measured); Prefer Comparison to Scoring (pairwise/arena beats absolute); Curate a Golden Set and Grow It from Failure (hand-built anchor, production regressions, overrides from Ch 8); Simulate Before You Let It Loose (sandbox, regulated-system treatment, earns the autonomy ladder); Run the Suite on Every Change (eval is CI for agents); Evaluate in Production on a Sample (cheap checks on 100%, judge on 5-10%, user signals, drift alerts, flywheel).
+- *Running example:* TODO (see front matter). Simulation harness replaying historical incidents; deterministic checks + calibrated LLM judge; trajectory scoring that fails a right-answer-wrong-path run; overrides become golden cases.
+- *In the wild:* evaluation as platform infrastructure (Google ADK eval module with trajectory tests on every code push; managed runtimes shipping prebuilt evaluators; open-source frameworks for judges + calibration + CI); the 2026 research turn to outcome/trajectory/meta and judge-as-measured-object.
+- *Which phase:* wraps all four, but lives in the loop; the experiment that tells you whether every other pattern worked.
 
 ---
 
