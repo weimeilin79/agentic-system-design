@@ -18,8 +18,8 @@
 3. **"Design Debate" sidebars.** The major platforms have converged on architecture but openly disagree on philosophy — and those disagreements teach better than any single vendor's answer. Recurring one-page sidebars stage the five live debates at the chapter where each bites hardest, present both camps fairly (important given the author's Google affiliation — the book stays vendor-neutral), and leave the reader equipped to decide:
    - **Reach for multi-agent, or resist it?** (Google/Microsoft/AWS lean in; Anthropic/Cognition say start single-agent) → Chapter 12.
    - **How much of the loop to own?** (own the loop vs. govern the loop; a ladder every vendor sells end to end, from raw API to managed runtime) → Chapter 2, revisited Chapter 10.
-   - **Where do guardrails live?** (IAM/policy vs. middleware pipeline vs. model/harness) → Chapter 19.
-   - **Own-the-stack vs. framework-agnostic?** (Google's integrated bet vs. AWS/Microsoft "host any framework") → Chapter 20.
+   - **Where do guardrails live?** (IAM/policy vs. middleware pipeline vs. model/harness) → Chapter 16.
+   - **Own-the-stack vs. framework-agnostic?** (Google's integrated bet vs. AWS/Microsoft "host any framework") → Chapter 18.
    - **Code-first vs. visual/no-code?** (ADK/Strands/Agents SDK vs. Agent Studio/AgentKit/Foundry) → Chapter 7.
 
 **Chapter template (every pattern chapter follows it):**
@@ -32,7 +32,7 @@
 7. *Which phase* — which of the four phases (prompt, context, harness, loop) this belongs to, and what it feeds.
 
 **The opener menu (rotate these so no two adjacent chapters open the same way):**
-- **The failure** *(2–4 chapters only)* — a concrete way agents break without this pattern. Save it for where the failure is genuinely visceral: **Policy and Guardrails (Ch 19)**, **Loop Validation (Ch 13)**, and one of **Evaluation (Ch 9)** or **The New Bottlenecks (Ch 24)**.
+- **The failure** *(2–4 chapters only)* — a concrete way agents break without this pattern. Save it for where the failure is genuinely visceral: **Policy and Guardrails (Ch 16)**, **Loop Validation (Ch 13)**, and one of **Evaluation (Ch 9)** or **The New Bottlenecks (Ch 22)**.
 - **The scene/scar** — a lived moment from the trenches (a beginner who couldn't `cd`; a 2 a.m. page).
 - **The reframe** — an antithesis metaphor that flips the reader's assumption (*a bridge, not a gate*).
 - **The question** — a provocative question the chapter then earns the answer to.
@@ -137,7 +137,7 @@ Rule of thumb: run the voice hot when framing; cool when the reader is doing. A 
 - **Making the pause work:** Interrupt Asynchronously on Durable State (checkpoint, queue with TTL, resume; sync holds die to gateway/serverless timeouts and OAuth expiry); Re-validate on Resume; Timeout Policy with an explicit fail direction.
 - **Making the human effective:** Write an Evidence Pack, Not an Alert (decide in under 15 seconds); Offer Four Verbs (approve, edit, reject, respond); Meet People Where They Work (Slack, the PR, the ticket).
 - **Learning from the human:** Capture Every Override (audit trail + eval set + bug report); Earn Autonomy with Evidence (progressive autonomy, per action, not per agent).
-- **The ladder:** in-the-loop to on-the-loop to out-of-the-loop; the review-throughput bottleneck forward-references Chapter 26.
+- **The ladder:** in-the-loop to on-the-loop to out-of-the-loop; the review-throughput bottleneck forward-references Chapter 24.
 - *Running example:* TODO (see front matter). Tiering, the async interrupt, the evidence pack in the on-call channel, an edited remediation captured as an eval case.
 - *In the wild:* Honk landing work as reviewable PRs (the review surface predates agents); LangGraph static breakpoints + dynamic interrupts over a checkpoint store; enterprise maturity ladders moving deliberately from HITL toward human-on-the-loop.
 - *When not to use it:* low-stakes reversible actions where a gate adds latency and nothing else; and "liability laundering," a gate that exists only to attach a human name to a failure.
@@ -173,7 +173,7 @@ Rule of thumb: run the voice hot when framing; cool when the reader is doing. A 
 *(Merged former Ch 11 Deterministic Workflows + Ch 12 Non-Deterministic Split, rewritten so the patterns are ARCHITECTURE shapes, how people actually wire deterministic + non-deterministic pieces, each carrying its own seam-check. Single metaphor: the wall of red you turn black, then wire the red that stays into safe shapes.)*
 - **The wall of red (scene + thesis):** shade every unpredictable box; most first drafts are nearly all red, but most red is habit (a lookup, a date conversion, a total belong in code). The most agentic thing you can do is use less agent. The chapter: turn what red you can to black, and wire the rest into shapes that fence it.
 - **Why you want black:** testable, auditable, cheap/fast, reliable. Default inverts: start all-deterministic, add red only where black can't do the job (the knowable-right-answer test).
-- **The one rule every shape obeys:** model may interpret/classify/summarize/draft/rank/propose/route; may not approve/pay/provision/submit/delete/write-to-system-of-record without a deterministic check. Proposals vs consequences. Every shape places a **seam-check** where red hands to black, drawn from one menu: constrain the shape (constrained decoding), validate (semantic + retry-with-error), verify (independent/self-consistency), abstain (confidence threshold to a human), authorize (policy layer, Ch 19).
+- **The one rule every shape obeys:** model may interpret/classify/summarize/draft/rank/propose/route; may not approve/pay/provision/submit/delete/write-to-system-of-record without a deterministic check. Proposals vs consequences. Every shape places a **seam-check** where red hands to black, drawn from one menu: constrain the shape (constrained decoding), validate (semantic + retry-with-error), verify (independent/self-consistency), abstain (confidence threshold to a human), authorize (policy layer, Ch 16).
 - **The architecture shapes (noun handles; each: shape, tradeoffs, where the seam-check goes, vendor instance), ordered by how much control the model holds, with the Channel Adapter appended last since it wraps rather than competes:** The Chain (fixed pipeline, prompt chaining); The Router (model labels, code dispatches to specialists); Parallel and Vote (sectioning for speed, voting/self-consistency for confidence, deterministic aggregation); The Orchestrator-Worker (model plans at runtime, deterministic harness executes; the reasoning-core shape; plan-then-execute); The Evaluator-Optimizer (generator + independent critic loop, deterministic stop); The Autonomous Loop (model owns control flow, fenced by Bounded Authority everywhere; hands to Ch 12); The Channel Adapter (many front doors, one canonical request; pure black; per-channel adapters authenticate, normalize, and stamp provenance/trust, renderers on the way out; channel content is data, never instructions; OpenClaw).
 - **Choosing a shape:** start at the top, stop at the first that fits; nest them (Router to Chains, a Chain using an Evaluator-Optimizer); every step down trades predictability for flexibility.
 - *Running example:* TODO (see front matter). Channel Adapter normalizes webhook/Slack/cron alerts into one canonical incident stamped with origin and trust; Router; per-category Chains, Orchestrator-Worker only if remediation is genuinely multi-step; mostly black with small red boxes at the seams, not an autonomous loop.
@@ -195,78 +195,69 @@ Rule of thumb: run the voice hot when framing; cool when the reader is doing. A 
 - *Which phase:* the **loop** at scale; many loops and the question of who owns the truth across them. Comes after the split because you cannot orchestrate agents you have not made reliable.
 - *Design Debate sidebar (still to write):* "the argument and how it ended," with the Cognition reversal as its spine.
 
-### Chapter 13. Loop Validation
-- Validating the loop itself: is each iteration making *progress*, and is the output *trustworthy* enough to proceed?
-- **Verification inside the loop:** the agent checks its own work before it commits or advances.
-- Self-correction and reflection loops; critic/validator agents; guardrail checks between steps.
-- **Progress and stall detection:** catching no-progress loops, oscillation, and cost-aware early exit.
-- Ground-truth checks vs. LLM-judge checks *inside* the loop (ties to the eval harness in Chapter 9).
-- *Aegis:* MCP verification tools confirm a remediation actually cleared the alert before the loop closes the incident.
-- *In the wild:* Spotify Honk's verification loops through MCP tools that check the work before a PR is raised.
-- *When not to use it:* trivial single-shot tasks where validation costs more than the risk it removes.
+### Chapter 13. Engineering the Loop
+*(Rewritten per author: this chapter is about **designing the loop at each scale** and how the Ch 11 shapes and Ch 12 topologies nest and combine. An earlier guardrails-catalog draft was rejected; Ch 10 already carries termination basics.)*
+- **Framing:** "Where is the loop?" The diagrams so far say what the pieces are; the loop says what actually runs. Once you have more than one agent you do not have a loop, you have several running inside each other.
+- **The loop in one agent:** one loop, one context, one budget, one exit, one trace. Nobody asks who is in charge, because there is only one candidate. **The tradeoff:** cheapest and most debuggable thing in the book; capped by one window and one toolset, no parallelism, no specialization. The failure is specific: the context fills and quality falls off a cliff that has nothing to do with the model.
+- **The loop with sub-agents (the load-bearing idea):** **an inner loop collapses into one step in the outer loop.** The parent calls, waits, gets a result; delegating looks exactly like calling a slow tool. **The Supervisor topology lives here**, not with the many-agent shapes, because it has a clear orchestrator (frameworks agree: Anthropic's agent SDK caps subagents at one level deep). Three things nest: **budgets** (and multiply: 10 x 10 = 100 calls; allocate downward as a share), **termination** (an inner cap produces a failed step the parent reads as an observation, not a dead run), **traces** (a tree; collapsible, but the summary is where the information you need got thrown away). **The tradeoff:** buys context isolation and specialization; pays multiplied tokens, added latency, and a lossy summary boundary (a bad summary makes the parent confidently wrong). Two costs that surprise people: the orchestrator accumulates context from every worker and at 4+ frequently blows its own window (the problem you delegated to avoid), and goal drift from a vague original request.
+- **The loop across many agents, what ends the loop?** Take away the orchestrator and nothing decides unless you build it. **Fan-Out ends when something consolidates**: the join is designed last, and you need a reducer that handles a hung branch and two branches disagreeing; sometimes the reducer must itself be an agent. Slowest branch sets the pace. **Debate ends when the judge says so**, with bounded rounds behind it; without the judge it is oscillation with better manners. **Peer-to-Peer does not end**: each agent has an exit, the system has none, and the thing that stops it is your rate limit. **The tradeoff:** buys independence and real parallelism; pays by hand-building the exit, the consolidation, and the accountability the orchestrator gave you free. "Ask what ends the loop before you draw the second box."
+- **Combining the shapes:** any shape can be a step inside any other shape, which is the whole grammar. Chain with an Autonomous Loop as step 3 (most common real architecture, reach for it first); Supervisor whose workers are Chains; Evaluator-Optimizer wrapping a Fan-Out; a Router in front of everything (which does not loop). The question to ask at every level: what ends this loop, and who consolidates what comes back?
+- *Running example:* TODO (see front matter). Walk it up the scales: single loop, then a log-analysis sub-agent (20 turns in, two sentences out, one step to the parent; 10 x 20 = 200 calls at 3 a.m.), then the composition it settles into (Router to per-category Chain to bounded Autonomous Loop to Fan-Out).
+- *In the wild:* Google first (ADK composes by containment, `SequentialAgent` holds `LoopAgent` holds `LlmAgent`; its examples ship Chain-with-an-Autonomous-Loop as a constructor arg; workflow agents deterministic so the driving loop is readable in the structure), then Anthropic's SDK (supervisor native, subagents one level deep), OpenAI handoffs, LangGraph graph-as-node; then the many-agent evidence: a published multi-agent financial-document study needing a **dedicated reconciliation agent** to merge conflicting fan-out branches, and durable-execution engines checking the done flag **and** an iteration cap with compensation after real-world actions.
+- *When not to:* nest only when forced; ask of every sub-agent whether a tool would have done it, because usually one would.
+- *Which phase:* the **loop** as an architecture rather than a mechanism.
 
 ### Chapter 14. Self-Evolving Agents
-- From static loops to loops that improve themselves over time.
-- **Mechanisms:** memory consolidation (episodic → procedural, from Chapter 6), skill/tool acquisition, self-reflection updates, learned routing.
-- Feedback-to-improvement pipelines: turning outcomes and traces into better behavior.
-- **Guardrails on self-modification:** bounded autonomy, human review of learned changes, and preventing drift or reward-hacking.
-- The safety valve: **no learned change ships unevaluated** (ties to Chapter 9) — evaluation gates every promotion.
-- *Aegis:* recurring incident resolutions get promoted into new runbooks automatically — but only past an eval gate and a human sign-off.
-- *In the wild:* the field's push toward agents that learn from experience, with the open caution about stability and auditability.
-- *When not to use it:* when auditability and stability outweigh adaptation — most regulated environments.
-
-### Chapter 15. Putting It All Together — The Reference Architecture
-- The full layered stack assembled from Parts II–III (the master diagram); Part IV then adds the hosting, isolation, observability, and policy layer around it.
-- The design doctrine as a checklist: build for autonomy; reliability in the loop; LLM reasons / tools ground / deterministic core guarantees; curate context; guardrails in IAM; review outcomes; don't agentify everything.
-- A design walkthrough: taking Aegis from blank page to production-ready using the whole framework.
-- A one-page architecture review checklist the reader can apply at work.
-
----
+*(Per author: combines **the loop with memory** (the dream agents) plus recent self-evolving engineering-agent work. Author's sharpened brief: after consolidation, distillation, and generalisation, **the patterns are the ways to evolve an agent**, so the catalog is the *targets* of evolution, not the mechanisms.)*
+- **Framing:** "What happens between sessions." The loop ends, the context is discarded, everything it worked out dies with it. "Your agent is not learning. It is auditioning, every single day, for a job it has already done a thousand times."
+- **Consolidate, distil, generalise (the setup):** the loop produces **episodes**, mostly noise. **Background Reflection** (*read many episodes during idle time and write down the few things that generalize*) runs off the hot path, because consolidation is slow, costs tokens, and helps nothing in flight, "which is why everyone who has built this reached for the same metaphor and named it after sleep." This is Ch 6's **Reflect** on Ch 6's background timing axis; Google's "reflective memory" is the same thing. Deflation retained: storing and retrieving is retrieval; evolution is converting experience into persistent behavioural change. "Plenty of systems retain. Far fewer convert."
+- **Six things you can change (the ladder):** consolidation hands you a lesson; the question nobody answers is where to put it. Six rungs, and climbing costs you: **blast radius** grows (a note affects retrievals, a prompt affects every run), **reversibility** falls (delete a line vs retrain), **feedback slows** (tonight vs three weeks), **auditability** drops (read a runbook vs read a weight), **cost** rises. **The discipline: put the lesson on the lowest rung that can hold it.** "Most teams reach for the top rung first, because it is the one that sounds like machine learning."
+- **The rungs (noun handles, 2-3 sentences each):** **Updated Notes** (a fact; cheapest, instant, one keystroke to delete); **New Skills** (a routine; one distilled skill stands in for twenty trajectories); **Rewritten Instructions** (always-true things folded into the prompt; watch the blast radius, the prompt is a shared resource that fills up); **New Tools** (a procedure re-derived every time is a tool waiting to happen; **moves it from red to black**, testable and free, but it is agent-written code so it needs a sandbox and a review); **Changed Code** (router categories, thresholds, workflow branches; highest leverage, changes the parts that were reliable to begin with, so it should arrive as a **pull request a human merges**, not something the agent does at 3 a.m.); **A Tuned Model** (distil trajectories into training data and move the weights; for when a behaviour must be instinct rather than instruction, trading auditability for a capability the other rungs cannot reach).
+- **The filter is the whole job (the top rung's warning):** training on your own trajectories means training on your own mistakes unless you filter. Standard answer keeps only successful runs, which works and is brutally wasteful (**one well-known agent dataset throws away ~60% of collected runs**). But **only ~24% of steps in failed trajectories are actually mistakes**, so the rest was good work discarded for having a bad ending; filter **step by step, with a critic**, not run by run. "An unfiltered dataset is worse than a smaller filtered one."
+- **The gate (applies at every rung):** **no learned change reaches production without passing evaluation** (Ch 9's golden set; if scores regress it does not ship). Two rules travel with it: **keep the learning readable** (you can argue with a runbook, which is why the bottom rungs are safer than the top), and **bound what the agent may change about itself** (notes and skills yes; its guardrails, policy, and termination conditions never). "The distinction is between an agent that gets better at its job and an agent that renegotiates the job."
+- **What goes wrong:** a bad lesson persists (one unlucky run becomes permanent, retrieval spreads it); the library rots (consolidation adds, almost nobody builds the thing that removes); drift; reward hacking (whatever you count, it optimizes, and it will not tell you it found a shortcut).
+- *Running example:* TODO (see front matter). Walk it up the ladder: Background Reflection spots the same failure four times, then place the lesson (Updated Note for the ownership fact, New Skill for the runbook, New Tool once it has hand-rolled the same queries fifteen times, Changed Code as a PR for the mis-categorising router). Say why it never reaches the top rung: volume too low, feedback too slow, and the on-call needs to read why it did what it did.
+- *In the wild (walks the ladder):* Google first (**"Language models need sleep"**, consolidation as first-class architecture; Antigravity reflective memory; Vertex Memory Bank; the framing to steal: **idle time is a resource you have already paid for**). Then **Anthropic Dreaming** (May 2026) as the productized bottom two rungs, and what makes it interesting is **what it refuses to do**: no weights, everything human-readable and rejectable, ceiling honestly stated. "They took the lower ceiling to keep the audit trail." Then the coding agents at the top rung (tests pass or they do not; the ~60% discard; the ~24%-of-steps finding), with the bottom rungs still running underneath (Claude Code mid-session memory writes; skill libraries at ~10-20x compression). **"Nobody serious is on one rung."**
+- *When not to:* stability and auditability beat adaptation in regulated domains; and when the work is genuinely novel every time there is nothing to consolidate.
+- *Which phase:* the **loop**, closed. The end feeds the beginning through memory.
 
 # Part IV — Hosting Agents
 
 *You've built the agent (Part II) and composed its behavior into working loops (Part III). Now run it for real. This part is the operational substrate: where an agent is hosted, how it's isolated, how it proves who it is and finds what it's allowed to use, how you watch what it does, and the policy that governs what it can do. It's the production layer the case studies in Part V lean on, and the difference between a demo and something you'd deploy.*
 
-### Chapter 16. Identity and Discovery
-- **Runtime capability discovery:** agents query a registry for approved tools and APIs instead of hard-coding endpoints; MCP registries.
-- **Machine-readable capability specs** (e.g. Arazzo) so an agent can reason about what a capability does before it calls it.
-- **Verifiable agent identity:** who the agent authenticates as; SPIFFE/mTLS between nodes; A2A Signed Agent Cards; agents as first-class principals, not static tokens.
-- **Cashing out what Composition assumed:** the multi-agent patterns in Part III assumed agents could prove who they are and discover each other (the "when agents work together" layer from Chapter 2). This chapter is where that assumption becomes real infrastructure.
-- *Aegis:* discovers only the remediation tools it's authorized for; authenticates as itself, so every action is attributable.
-- *In the wild:* MCP registries; A2A v1.0 identity; the 2026 push toward verifiable agent credentials.
-- *When not to use it:* a single, closed agent with a fixed toolset doesn't need a discovery layer.
-- *Which phase:* harness.
-
-### Chapter 17. Sandboxing and Runtime
-- **Where agents run:** managed agent runtimes (Bedrock AgentCore Runtime, Vertex Agent Engine, Azure Foundry) vs. containers vs. serverless vs. self-hosted; the own-vs-govern-the-loop ladder (Chapter 2) applied to hosting.
-- **Sandboxing and isolation:** running agent-generated code and risky tool calls in a sandbox (microVMs like Firecracker, gVisor, ephemeral containers, hosted code sandboxes); session isolation so one run can't see another; containing the blast radius.
-- **Durable execution and state:** checkpointing, resumable long-running agents, state that survives a crash (the harness phase, Chapter 3).
+### Chapter 15. Sandboxing and Runtime
+- **Where agents run:** managed agent runtimes (Vertex Agent Engine, Bedrock AgentCore Runtime, Azure Foundry) vs. containers vs. serverless vs. self-hosted; the own-vs-govern-the-loop ladder (Ch 2) applied to hosting.
+- **Sandboxing and isolation:** running agent-generated code and risky tool calls in a sandbox (microVMs, gVisor, ephemeral containers, hosted code sandboxes); session isolation so one run cannot see another; containing the blast radius. Cashes out Ch 11's Code Execution rung and Ch 14's New Tools rung, both of which hand the agent the ability to write and run code.
+- **Durable execution and state:** checkpointing, resumable long-running agents, state that survives a crash. Cashes out Ch 8's async HITL pause and Ch 12's replayable record.
 - **Scaling the runtime:** horizontal scale, mostly-stateless workers, concurrency, and the cost of keeping them warm.
-- *Aegis:* runs each remediation in a fresh sandbox; hosted on a managed runtime with durable state, so a long incident survives a restart.
-- *In the wild:* Firecracker microVM isolation (AWS AgentCore Runtime); hosted code-execution sandboxes; durable-execution engines.
+- *Running example:* TODO (see front matter). Each remediation in a fresh sandbox; managed runtime with durable state so a long incident survives a restart.
+- *In the wild:* Google first, then microVM isolation, hosted code-execution sandboxes, durable-execution engines.
 - *When not to use it:* a read-only agent that never executes code or writes state needs little of this.
 - *Which phase:* harness.
 
-### Chapter 18. Observability for Agents
+### Chapter 16. Identity, Discovery, and Policy
+*(Merged per author from the former Ch 15 "Identity and Discovery" and Ch 18 "Policy and Guardrails". They are one concern: identity is the prerequisite for policy, since you cannot authorize an agent that cannot prove who it is, and discovery is itself an authority question, because what an agent can find should be a function of what it may use.)*
+- **Verifiable agent identity:** who the agent authenticates as; SPIFFE/mTLS between nodes; A2A Signed Agent Cards; agents as first-class principals rather than static tokens borrowed from a human.
+- **Runtime capability discovery:** agents query a registry for approved tools and APIs instead of hard-coding endpoints (MCP registries); machine-readable capability specs so an agent can reason about what a capability does before calling it. Discovery is scoped by identity: an agent should only be able to find what it is allowed to use.
+- **Just-in-time authorization:** the agent decides at runtime what to call, so permissions are scoped dynamically rather than provisioned up front.
+- **Guardrails in IAM and policy, not the prompt:** "don't query the PII columns" belongs in access policy, where the model cannot talk its way past it. This is where Ch 11's Bounded Authority and Ch 7's Guardrailed Boundary actually live.
+- **Content safety and injection defense:** input/output filtering, RAI middleware, indirect-prompt-injection defenses (Model Armor). Ch 11's Channel Adapter stamps provenance; this is the layer that acts on it.
+- **Blast-radius containment for chained execution:** preventing privilege escalation across autonomous tool chains; high-stakes actions routed to a human gate (Ch 8).
+- **Governance and audit:** every action attributable, logged, reviewable.
+- *Running example:* TODO (see front matter). Discovers only the remediation tools it is authorized for; authenticates as itself so every action is attributable; "never touch the customer DB" enforced in IAM; a human gate before any production write.
+- *In the wild:* Google first (Model Armor, zero-trust, agent identity in the platform), then AWS AgentCore Identity/Policy, Microsoft RAI middleware, MCP registries, A2A identity, the 2026 push toward verifiable agent credentials.
+- *Design Debate (guardrail placement):* IAM/policy (AWS, Google) vs. middleware pipeline (Microsoft) vs. model/harness (Anthropic, OpenAI), the same guardrail, three homes.
+- *When not to use it:* a single closed agent with a fixed toolset needs no discovery layer; read-only low-stakes agents do not need the heavy policy machinery (say so explicitly).
+- *Which phase:* harness, plus the social contract.
+
+### Chapter 17. Observability for Agents
 - Beyond p95s and error budgets: **"what did the agent decide, and why?"**
 - Capturing prompts, tool calls, intermediate decisions, and final outputs.
-- Agentic metadata as an infrastructure layer; tracing across a multi-agent run.
-- Turning traces into eval data (Chapter 9) and into the improvement signal for self-evolving loops (Chapter 14).
-- *Aegis:* a decision trace for every incident the agent touches, feeding both the eval set and the runbook-promotion pipeline.
-- *Vendor lens:* AWS crystallizes the core insight — traditional APM misses the bug that matters most, a *valid-but-wrong decision* in a multi-step workflow, so instrument the reasoning trace from the start (its AgentCore Observability spans four telemetry layers); OpenTelemetry has become the shared standard (Microsoft Agent Framework, AgentCore, and third-party tools like Arize/LangSmith/Langfuse all speak it).
-
-### Chapter 19. Policy and Guardrails
-- **Just-in-time authorization:** the agent decides at runtime what to call, so permissions are scoped dynamically, not provisioned up front.
-- **Guardrails in IAM and policy, not the prompt:** "don't query the PII columns" belongs in access policy and config, where the model can't talk its way past it.
-- **The social contract (from Chapter 2), enforced:** which tools it may reach for, which agents it may talk to, what it may see, all expressed as policy.
-- **Content safety and injection defense:** input/output filtering, RAI middleware, indirect-prompt-injection defenses (Model Armor).
-- **Blast-radius containment for chained execution:** preventing privilege escalation across autonomous tool chains; high-stakes actions routed to a human gate (ties to Human-in-the-Loop, Chapter 8).
-- **Governance and audit:** every action attributable, logged, reviewable.
-- *Aegis:* remediation gated by JIT authz; "never touch the customer DB" enforced in IAM; a human approval gate before any production write.
-- *In the wild:* AWS AgentCore Identity/Policy; Google Model Armor + zero-trust; Microsoft's RAI middleware pipeline.
-- *Design Debate (guardrail placement):* IAM/policy (AWS, Google) vs. middleware pipeline (Microsoft) vs. model/harness (Anthropic, OpenAI), the same guardrail, three homes.
-- *When not to use it:* read-only, low-stakes agents where heavy policy machinery isn't warranted (but say so explicitly).
-- *Which phase:* harness, plus the social contract.
+- Agentic metadata as an infrastructure layer; tracing across a multi-agent run (Ch 13's trace tree, where an inner loop collapses to one node and the summary is where the information you need got thrown away).
+- Turning traces into eval data (Ch 9) and into the improvement signal for self-evolving loops (Ch 14). **Observability comes last in this part because it is what feeds the loop back to the beginning.**
+- *Running example:* TODO (see front matter). A decision trace for every incident, feeding both the eval set and the runbook-promotion pipeline.
+- *In the wild:* Google first, then AWS's framing that traditional APM misses the bug that matters most, a *valid-but-wrong decision* in a multi-step workflow, so instrument the reasoning trace from the start; OpenTelemetry as the shared standard across Microsoft Agent Framework, AgentCore, and third-party tools.
+- *Which phase:* harness.
 
 ---
 
@@ -274,9 +265,9 @@ Rule of thumb: run the voice hot when framing; cool when the reader is doing. A 
 
 *A survey chapter, three scenario-driven design studies (each anchored on a different dominant force), and two real teardowns. The design studies are fresh systems, not Aegis, chosen to show the same patterns behaving differently when scale, the edge, or a merger is the thing that reorders every decision.*
 
-### Chapter 20. The Vendor Landscape — Convergence and Its Discontents
+### Chapter 18. The Vendor Landscape — Convergence and Its Discontents
 - **The thesis:** the five major platforms have converged on nearly the same reference architecture (reasoning model + tools + memory + orchestration + identity + observability) and the same two protocols (MCP for tools, A2A for agents) — proof that Parts I–IV describe an industry consensus, not one opinion.
-- **The convergent core** (the vendor-neutral reference model, mirrored from Chapter 15): deterministic/probabilistic split; MCP + A2A; memory as a first-class layer; identity & security as foundations; built-in decision tracing; model-agnostic managed runtimes; simplicity-first.
+- **The convergent core** (the vendor-neutral reference model): deterministic/probabilistic split; MCP + A2A; memory as a first-class layer; identity & security as foundations; built-in decision tracing; model-agnostic managed runtimes; simplicity-first.
 - **Five instantiations, one page each** — how each platform expresses the same patterns:
   - **AWS** — Bedrock AgentCore (Runtime/Gateway/Memory/Identity/Observability/Policy/Evaluations); ops-first; "is this really an agent?" gate; the *valid-but-wrong decision* as the bug that matters.
   - **Anthropic** — *Building Effective Agents* (simplicity, transparency, agent-computer interface); context as a finite attention budget; reduce abstraction in production.
@@ -287,7 +278,7 @@ Rule of thumb: run the voice hot when framing; cool when the reader is doing. A 
 - **The five debates** (forward-referencing the Design Debate sidebars): multi-agent, abstraction, guardrail placement, own-stack vs. agnostic, code vs. visual.
 - *Why this chapter is here, not in Part I:* the reader needs the patterns (Parts II–IV) before the vendor mapping means anything; placing it as the case-study opener turns "here's the landscape" into the natural runway for the studies that follow.
 
-### Chapter 21. The Peak-Day Marketplace — Designing for Scale
+### Chapter 19. The Peak-Day Marketplace — Designing for Scale
 - The dominant force: volume, throughput, cost, and latency at millions of requests. When scale is the constraint, it reorders every decision.
 - **The use case:** the shopping assistant on a giant online marketplace, the kind Amazon or Alibaba run. A few questions per second on an ordinary Tuesday, then 50x that on Black Friday or Singles' Day, when every extra 100ms and every wasted cent per query is multiplied across tens of millions of concurrent shoppers.
 - Design moves driven by scale: multi-model routing and cascades (a cheap model for the 90%, a stronger one only for the hard 10%, Chapter 4); aggressive Cacheable Prefix and batch APIs (Chapters 4, 5); deterministic fast paths for common cases (Chapters 11, 12); async and background work; horizontal scaling of a mostly-stateless harness with durable state only where needed; sampled observability.
@@ -295,7 +286,7 @@ Rule of thumb: run the voice hot when framing; cool when the reader is doing. A 
 - *In the wild:* **Klarna's** OpenAI-powered assistant is the flagship scale case: ~2.3M conversations in month one, roughly two-thirds of support chats, framed as the work of ~700 (later ~853) agents, across 23 markets and 35+ languages, resolution 11 min to under 2 min, cost-per-transaction $0.32 to $0.19; grounded in help-center content with low-confidence cases routed to humans. Use the **2025 walk-back** as the cautionary half: humans rehired for complex, emotional, and dispute cases, and weak escalation handoffs (customers re-explaining themselves) as the failure that hurt CSAT. Secondary: Rocket AI Agent on Amazon Bedrock (3x conversion, 85% fewer transfers).
 - Patterns that dominate: multi-model, caching, deterministic workflows.
 
-### Chapter 22. The Delivery Courier — Designing for the Edge
+### Chapter 20. The Delivery Courier — Designing for the Edge
 - The dominant force: intermittent or absent connectivity, latency, and constrained hardware (and privacy, for some edge cases). Speed and locality win.
 - **The use case:** the courier's assistant inside a food-delivery app, the kind Uber Eats or DoorDash run. It lives on the driver's phone, guiding the route and handling order changes and customer messages, and it has to keep working when they drop into a parking garage, a tunnel, or a rural dead zone, so it can't assume the cloud is there.
 - Design moves driven by the edge: small or fine-tuned open models on-device (Chapter 4); local tiered memory with sync-on-reconnect (Chapter 6); graceful degradation and a local fallback model; a hybrid split, a small local model that escalates to a cloud frontier model only when connected; actions that queue locally and reconcile when the signal returns.
@@ -303,22 +294,22 @@ Rule of thumb: run the voice hot when framing; cool when the reader is doing. A 
 - *In the wild:* **DoorDash, Uber, and Grubhub** testing multi-step agentic ordering in the Google Gemini app (Mar 2026), where Gemini acts in-app inside an on-device "secure virtual window" (edge sandboxing). The dispatch brains are already edge-shaped: Uber's Trip State Model and DoorDash's DeepRed engine run on real-time GPS and motion-sensor data, and last-mile driver apps are built around offline sync and geofencing. The hybrid split is a live research line: on-device inference on NPU-class phones (small Gemma/Phi/Qwen variants) with edge-SLM-to-cloud-LLM escalation.
 - Patterns that dominate: multi-model (edge/small), local tiered memory, fallbacks.
 
-### Chapter 23. The Bank and the Neobank — Designing for a Merger
+### Chapter 21. The Bank and the Neobank — Designing for a Merger
 - The dominant force: heterogeneity, governance, and identity across two organizations, a large enterprise absorbing a small one, each with its own stack, data, and risk culture.
 - **The use case:** a century-old retail bank acquires a fast-growing neobank. The bank's mainframe-era core and the startup's cloud-native agents have to serve the same customers from day one, across two identity systems, two risk cultures, and two data regimes, without a two-year migration first.
 - Design moves driven by the merger: agents as the glue bridging legacy enterprise and modern startup systems via MCP connectors (Chapter 7); identity federation and memory Scoping across two orgs (Chapters 6, 20); guardrails reconciling two risk cultures (the "social contract" from Chapter 2); data residency and access control; incremental migration with agents carrying the seam through a multi-year integration.
 - The trade-offs: autonomy vs. governance, whose conventions win, how much to unify vs. bridge.
-- *In the wild:* **TELUS Digital's** agentic-banking write-up is this scenario almost verbatim: a backend-for-frontend (BFF) plus MCP orchestration layer gives agents permissioned access to a 40-year-old mainframe without replacing it ("build above it"). **Strata's Maverics** does M&A identity integration via an abstraction layer over two orgs' identity providers, translating protocols instead of migrating identities. **Deloitte** describes agents that reconcile records and catalogs across legacy systems and flag conflicts, avoiding an immediate data migration. War story: a post-merger ERP consolidation (Western Digital, 25 legacy systems retired) using scout agents to map shadow processes from transaction logs. Strong enough that Ch 23 could run as a light teardown, not a pure hypothetical.
+- *In the wild:* **TELUS Digital's** agentic-banking write-up is this scenario almost verbatim: a backend-for-frontend (BFF) plus MCP orchestration layer gives agents permissioned access to a 40-year-old mainframe without replacing it ("build above it"). **Strata's Maverics** does M&A identity integration via an abstraction layer over two orgs' identity providers, translating protocols instead of migrating identities. **Deloitte** describes agents that reconcile records and catalogs across legacy systems and flag conflicts, avoiding an immediate data migration. War story: a post-merger ERP consolidation (Western Digital, 25 legacy systems retired) using scout agents to map shadow processes from transaction logs. Strong enough that Ch 21 could run as a light teardown, not a pure hypothetical.
 - Patterns that dominate: tooling/MCP, scoping, identity and guardrails.
 
-### Chapter 24. Spotify Honk — A Coding Agent, Torn Down
+### Chapter 22. Spotify Honk — A Coding Agent, Torn Down
 - A background coding agent powered by Claude, built on the existing Fleet Management harness.
 - Slack-native trigger; MCP-exposed verification tools; feedback loops for predictable results.
 - Context engineering across thousands of repos; loop engineering as the reliability source.
 - Outcome-based accountability; PRs as the human-review gate.
 - Result: 1,500+ merged PRs; the shift from code *creation* to full-lifecycle work.
 
-### Chapter 25. ServiceNow — The Enterprise Workflow Agent
+### Chapter 23. ServiceNow — The Enterprise Workflow Agent
 - The scenario: agentic IT and enterprise-workflow automation (incident, request, and change management) across a large enterprise's connected systems.
 - Architecture: LLM reasoning wrapped around deterministic, governed workflows; connected/specialized agents coordinating over enterprise data; approvals and audit built in.
 - Why it's the counterweight to Honk: heavily governed, deterministic-first, and enterprise-integration-heavy, where Honk is developer-autonomous and loop-first.
@@ -329,17 +320,17 @@ Rule of thumb: run the voice hot when framing; cool when the reader is doing. A 
 
 # Part VI — Frontier
 
-### Chapter 26. The New Bottlenecks
+### Chapter 24. The New Bottlenecks
 - What breaks when agents ship work faster than humans can review it.
 - Accountability, trust collapse, and the review-throughput problem.
 - Agent "factories": coordinated agents producing complex knowledge work.
 
-### Chapter 27. The Full Lifecycle
+### Chapter 25. The Full Lifecycle
 - Beyond creation: maintenance, migration, deletion — the work nobody wants.
 - Agent-first platforms (developer portals becoming agent interfaces via MCP).
 - Edge and alternative-cloud inference: proximity over raw processing power.
 
-### Chapter 28. Identity, Trust, and the Agentic Web
+### Chapter 26. Identity, Trust, and the Agentic Web
 - Machine identity as a top-tier security concern.
 - Verifiable credentials, signed agent cards, and the non-human internet.
 - Open standards (MCP, A2A) and where the ecosystem is heading.
@@ -350,7 +341,7 @@ Rule of thumb: run the voice hot when framing; cool when the reader is doing. A 
 
 - **A. The chapter-pattern quick reference** — every pattern on one page.
 - **B. The Aegis codebase** — the running example, assembled end to end.
-- **C. Architecture review checklist** — the Chapter 15 checklist, printable.
+- **C. Architecture review checklist** — a printable one-page review checklist distilled from Parts II–IV. *(Was the Chapter 16 checklist; that chapter is cut, so this appendix now has to carry it or be dropped.)*
 - **D. Framework & protocol cheat sheet** — ADK, LangGraph, CrewAI, Bedrock, MCP, A2A, Arazzo.
 - **E. Glossary** — agentic misalignment, JIT authz, agentic metadata, plan-do-evaluate, and more.
 
@@ -358,39 +349,39 @@ Rule of thumb: run the voice hot when framing; cool when the reader is doing. A 
 
 ## Notes on sequencing (for the author)
 
-- **Parts I–IV are the backbone of the argument; Part V is proof; Part VI is the horizon.** A reader could stop after Chapter 15 for the complete design method, or after Part IV (Chapter 19) for the production-ready one.
+- **Parts I–IV are the backbone of the argument; Part V is proof; Part VI is the horizon.** A reader could stop after Chapter 16 for the complete design method, or after Part IV (Chapter 16) for the production-ready one.
 - **The running example (TODO, see front matter) must be introduced in Chapter 1 and touched in every pattern chapter** or the "cumulative" feel is lost, this is the highest-risk thread to maintain.
 - **Chapter 3 (the four phases) and the loop-engineering cluster (Chapters 10–11) are what sell the book.** If a reviewer reads only those, they should get the whole thesis.
-- **Part III's internal order (Composition) is deliberate:** deterministic first (Ch 11), then the split (Ch 11), so the reader anchors on predictability before non-determinism. Loop validation (Ch 13) follows multi-agent (Ch 12) because validating a single loop is a prerequisite to trusting many. Self-evolution (Ch 14) closes the part by planting a need Part IV answers: you can't safely evolve what you can't observe, so observability (Ch 18) now lands as the operational concern it is, in Hosting Agents.
-- **Part V mixes scenario design studies and teardowns.** Chapters 20–23 are fresh, Aegis-free system designs, each anchored on one dominant force (scale, edge, merger) to show the same patterns behaving differently under different pressure. Chapters 23–25 are real teardowns (Honk, ServiceNow) chosen as opposites: developer-autonomous and loop-first (Honk) vs. governed and deterministic-first (ServiceNow). Spotify Ads AI was cut; Shopify and Block survive only as in-text vendor-lens examples in Part II. The security split and the new design studies grew the book to 29 chapters, so watch the page budget.
+- **Part III's internal order (Composition) is deliberate:** deterministic first (Ch 11), then the split (Ch 11), so the reader anchors on predictability before non-determinism. Loop validation (Ch 13) follows multi-agent (Ch 12) because validating a single loop is a prerequisite to trusting many. Self-evolution (Ch 14) closes the part by planting a need Part IV answers: you can't safely evolve what you can't observe, so observability (Ch 17) now lands as the operational concern it is, in Hosting Agents.
+- **Part V mixes scenario design studies and teardowns.** Chapters 15–21 are fresh, Aegis-free system designs, each anchored on one dominant force (scale, edge, merger) to show the same patterns behaving differently under different pressure. Chapters 19–23 are real teardowns (Honk, ServiceNow) chosen as opposites: developer-autonomous and loop-first (Honk) vs. governed and deterministic-first (ServiceNow). Spotify Ads AI was cut; Shopify and Block survive only as in-text vendor-lens examples in Part II. The security split and the new design studies grew the book to 29 chapters, so watch the page budget.
 - **The Design Debate sidebars are the neutrality mechanism.** Five recurring sidebars (mapped in "About this book") stage the real vendor disagreements at the chapters where they bite, presenting both camps rather than an answer. Given the author's Google affiliation, holding these scrupulously even-handed is what protects the book's vendor-neutral credibility — Google appears as one instantiation among five, never the default.
-- **The vendor landscape (Ch 20) is one chapter, not a part — deliberately.** Instead of a chapter per platform (which bloats the page count and dates fastest), the convergence table is the single reference model and each vendor is a one-page instantiation. This is the main lever for hitting the ~500-page target while staying current.
+- **The vendor landscape (Ch 18) is one chapter, not a part — deliberately.** Instead of a chapter per platform (which bloats the page count and dates fastest), the convergence table is the single reference model and each vendor is a one-page instantiation. This is the main lever for hitting the ~500-page target while staying current.
 - Keep case-study *and vendor* specifics (versions, metrics, product names) dated and quarantined in Part V and the appendices — branding shifts fast (e.g., Vertex AI Agent Builder → Gemini Enterprise Agent Platform within a single year), so the pattern chapters in Parts I–IV must stay product-free to age well.
 - **Voice consistency is a first-class risk, like the Aegis thread.** Draft the *voiced* sections (openers, sidebars, closes) against the Voice & Style Guide, and resist letting the voice creep into the mechanics. If a chapter opener doesn't have a real scar or scene behind it, write it plainer rather than manufacturing an anecdote — a forced war story reads worse than none.
 
 ### Sources underpinning the examples
 - InfoWorld, *Best practices for building agentic systems* (Apr 2026).
-- Spotify Engineering: *Spotify x Anthropic Live* + Honk series (Nov 2025–Apr 2026) for the Chapter 24 teardown. ServiceNow AI Agents / Now Assist for Chapter 25 (research current specifics before drafting).
+- Spotify Engineering: *Spotify x Anthropic Live* + Honk series (Nov 2025–Apr 2026) for the Chapter 22 teardown. ServiceNow AI Agents / Now Assist for Chapter 23 (research current specifics before drafting).
 - IBM Think 2026 recap; A2A protocol v1.0; 2026 MCP roadmap.
-- Vendor landscape (Ch 20): AWS Bedrock AgentCore docs & AWS ML blog; Anthropic *Building Effective Agents* (Dec 2024) and *Effective Context Engineering for AI Agents* (Sept 2025); Microsoft *Agent Framework 1.0* (GA Apr 2026) & Azure Architecture Center; Google Cloud Next 2026 / Gemini Enterprise Agent Platform docs; OpenAI *AgentKit* & Agents SDK; Andrew Ng (AI Ascent 2024); Cognition "Don't Build Multi-Agents"; Liu et al., *Agent Design Pattern Catalogue* (JSS 2025). *(Full detail in the companion vendor-landscape briefing.)*
+- Vendor landscape (Ch 18): AWS Bedrock AgentCore docs & AWS ML blog; Anthropic *Building Effective Agents* (Dec 2024) and *Effective Context Engineering for AI Agents* (Sept 2025); Microsoft *Agent Framework 1.0* (GA Apr 2026) & Azure Architecture Center; Google Cloud Next 2026 / Gemini Enterprise Agent Platform docs; OpenAI *AgentKit* & Agents SDK; Andrew Ng (AI Ascent 2024); Cognition "Don't Build Multi-Agents"; Liu et al., *Agent Design Pattern Catalogue* (JSS 2025). *(Full detail in the companion vendor-landscape briefing.)*
 
-### Design-study case sources (Ch 20–23) — for the author
+### Design-study case sources (Ch 15–21) — for the author
 *Recent online cases gathered to anchor the three design studies. Volatile: verify figures and check for newer coverage before drafting.*
 
-- **Ch 21 (Scale) — Klarna AI assistant:**
+- **Ch 19 (Scale) — Klarna AI assistant:**
   - Klarna press release, *AI assistant handles two-thirds of customer service chats in its first month* — klarna.com/international/press/klarna-ai-assistant-handles-two-thirds-of-customer-service-chats-in-its-first-month/
   - LangChain case study (built on LangGraph/LangSmith), Jun 2026 — langchain.com/blog/customers-klarna
   - CX Dive, cost-per-transaction $0.32→$0.19, May 2025 — customerexperiencedive.com/news/klarna-ai-slash-customer-service-costs/748647/
   - Twig, deep analysis incl. the 2025 walk-back — twig.so/blog/klarna-ai-customer-support-efficiency
   - ZenML LLMOps DB (architecture summary; also Rocket AI Agent on Bedrock) — zenml.io/llmops-database/ai-assistant-for-global-customer-service-automation
 
-- **Ch 22 (Edge) — food-delivery / on-device:**
+- **Ch 20 (Edge) — food-delivery / on-device:**
   - Stellagent recap of Retail TouchPoints: DoorDash/Uber/Grubhub agentic ordering in Gemini; on-device "secure virtual window", Mar 2026 — stellagent.ai/insights/doordash-uber-gemini-agentic-ordering
   - Riseup Labs: Uber Trip State Model, DoorDash DeepRed dispatch, DashAI, Jan 2026 — riseuplabs.com/ai-in-food-delivery-app-development/
   - Bolder Apps: on-device inference, NPUs, AI-native mobile apps, 2026 — bolderapps.com/blog-posts/beyond-the-chatbot-5-ways-ai-native-mobile-apps-are-disrupting-traditional-service-industries-in-2026
   - arXiv survey: *Collaborative Inference and Learning between Edge SLMs and Cloud LLMs* (2507.16731) — the edge/cloud hybrid split
 
-- **Ch 23 (Merger) — M&A integration:**
+- **Ch 21 (Merger) — M&A integration:**
   - TELUS Digital: *Agentic banking without core replacement* (BFF + MCP bridge over the mainframe), May 2026 — telusdigital.com/insights/data-and-ai/article/agentic-banking-without-core-replacement
   - Strata.io: Maverics identity orchestration for M&A (abstraction layer over IDPs), Apr 2026 — strata.io/blog/app-identity-modernization/managing-identity-in-a-merger-acquisition-or-divestiture/
   - Deloitte: *Where is the value of AI in M&A* (multi-agent + modern data architecture; reconciliation agents) — deloitte.com/cz-sk/en/services/consulting/blogs/where-is-the-value-of-AI-in-MA-why-multi-agent-systems-needs-modern-data-architecture.html
